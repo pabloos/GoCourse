@@ -8,12 +8,26 @@ import (
 func main() {
 	var wg sync.WaitGroup
 
-	wg.Add(1)
+	wg.Add(2)
 
-	go func() {
-		fmt.Println("Hello, GDG Marbella!")
-		wg.Done()
-	}()
+	channel := make(chan string)
+
+	go sender(channel, &wg)
+	go receiver(channel, &wg)
 
 	wg.Wait()
+}
+
+func sender(channel chan<- string, wg *sync.WaitGroup) {
+	channel <- "Hello, GDG Marbella!"
+
+	wg.Done()
+}
+
+func receiver(channel <-chan string, wg *sync.WaitGroup) {
+	message := <-channel
+
+	fmt.Println(message)
+
+	wg.Done()
 }
