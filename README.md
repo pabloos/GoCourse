@@ -9,4 +9,4 @@ In this sesion we will talk about:
 
 3. Channels
 
-4. Atomic Counters
+4. Mutex
