@@ -8,26 +8,35 @@ import (
 func main() {
 	var wg sync.WaitGroup
 
-	wg.Add(2)
-
 	channel := make(chan string)
 
-	go sender(channel, &wg)
+	defer close(channel)
+
+	messages := []string{
+		"Hello, GDG Marbella!",
+		"Hello, Gophers!",
+		"Hello, World!",
+	}
+
+	for _, msg := range messages {
+		wg.Add(1)
+
+		go sender(msg, channel, &wg)
+	}
+
 	go receiver(channel, &wg)
 
 	wg.Wait()
 }
 
-func sender(channel chan<- string, wg *sync.WaitGroup) {
-	channel <- "Hello, GDG Marbella!"
+func sender(msg string, channel chan<- string, wg *sync.WaitGroup) {
+	channel <- msg
 
 	wg.Done()
 }
 
 func receiver(channel <-chan string, wg *sync.WaitGroup) {
-	message := <-channel
-
-	fmt.Println(message)
-
-	wg.Done()
+	for msg := range channel {
+		fmt.Println(msg)
+	}
 }
