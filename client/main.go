@@ -6,20 +6,25 @@ import (
 	"net/http"
 )
 
-const lstLaunchesURL = "https://api.spacexdata.com/v3/launches/latest"
+const (
+	URL = "http://localhost:8080"
+)
 
 func main() {
-	resp, err := http.Get(lstLaunchesURL)
-	if err != nil {
-		fmt.Println(err)
-	}
+	client := &http.Client{}
 
+	resp, err := client.Get(URL)
+	if err != nil {
+		fmt.Print(err)
+		return
+	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Print(err)
+		return
 	}
 
-	fmt.Println(string(body))
+	fmt.Print(string(body))
 }
