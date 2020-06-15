@@ -33,7 +33,5 @@ func greetHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	greet := fmt.Sprintf("Hello %s, from %s\n", t.Name, t.Location)
-
-	w.Write([]byte(greet))
+	fmt.Fprintf(w, "Hello %s, from %s\n", t.Name, t.Location)
 }
