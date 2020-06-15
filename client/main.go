@@ -2,15 +2,19 @@ package main
 
 import (
 	"bytes"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 )
 
 const (
-	URL = "http://localhost:8080"
+	URL = "https://localhost:8080"
 )
 
 type greet struct {
@@ -19,7 +23,11 @@ type greet struct {
 }
 
 func main() {
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: tlsConfig(),
+		},
+	}
 
 	greetReq := greet{
 		Name:     "John Doe",
@@ -38,4 +46,20 @@ func main() {
 	defer resp.Body.Close()
 
 	io.Copy(os.Stdout, resp.Body)
+}
+
+func tlsConfig() *tls.Config {
+	crt, err := ioutil.ReadFile("../cert/public.crt")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rootCAs := x509.NewCertPool()
+	rootCAs.AppendCertsFromPEM(crt)
+
+	return &tls.Config{
+		RootCAs:            rootCAs,
+		InsecureSkipVerify: false,
+		ServerName:         "localhost",
+	}
 }

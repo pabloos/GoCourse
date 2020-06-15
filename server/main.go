@@ -1,8 +1,10 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -14,13 +16,36 @@ type greet struct {
 
 func main() {
 	httpServer := &http.Server{
-		Addr: ":8080",
+		Addr:      ":8080",
+		TLSConfig: tlsConfig(),
 	}
 
 	http.HandleFunc("/greet", greetHandler)
 
-	if err := httpServer.ListenAndServe(); err != nil {
+	if err := httpServer.ListenAndServeTLS("", ""); err != nil {
 		log.Fatal(err)
+	}
+}
+
+func tlsConfig() *tls.Config {
+	crt, err := ioutil.ReadFile("../cert/public.crt")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	key, err := ioutil.ReadFile("./cert/private.key")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	cert, err := tls.X509KeyPair(crt, key)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return &tls.Config{
+		Certificates: []tls.Certificate{cert},
+		ServerName:   "localhost",
 	}
 }
 
