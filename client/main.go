@@ -5,23 +5,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"os"
+
+	"github.com/pabloos/http/greet"
 )
 
 const (
-	URL = "http://localhost:8080"
+	URL = "https://localhost:8080"
 )
 
-type greet struct {
-	Name     string `json:"name,omitempty"`
-	Location string `json:"location,omitempty"`
-}
-
 func main() {
-	client := &http.Client{}
+	client := newClient()
 
-	greetReq := greet{
+	greetReq := greet.Greet{
 		Name:     "John Doe",
 		Location: "USA",
 	}
