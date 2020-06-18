@@ -1,4 +1,7 @@
 
+test:
+	go test -v -race ./server
+
 certs:
 	mkdir -p server/cert cert/
 	openssl genrsa -out server/cert/private.key 4096
