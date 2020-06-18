@@ -15,12 +15,15 @@ type greet struct {
 }
 
 func main() {
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/greet", greetHandler)
+
 	httpServer := &http.Server{
 		Addr:      ":8080",
+		Handler:   mux,
 		TLSConfig: tlsConfig(),
 	}
-
-	http.HandleFunc("/greet", greetHandler)
 
 	if err := httpServer.ListenAndServeTLS("", ""); err != nil {
 		log.Fatal(err)
