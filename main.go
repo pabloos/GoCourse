@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"fmt"
+	"io"
+	"log"
 	"net"
 )
 
@@ -59,4 +62,43 @@ func main() {
 	_, ipv4Net, _ := net.ParseCIDR("10.0.1.1/8")
 
 	ipv4Net.Contains(net.ParseIP("192.168.1.1")) //false
+
+	listener, err := net.Listen("tcp", ":8080")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	defer listener.Close()
+
+	go func() {
+		for {
+			conn, err := net.Dial("tcp", "localhost:8080")
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			msg, err := bufio.NewReader(conn).ReadString('\n')
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				fmt.Println(string(msg))
+			}
+		}
+	}()
+
+	// go func() {
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			log.Printf("failed to accept connection: %s", err.Error())
+			continue
+		}
+
+		fmt.Println("Served started")
+
+		io.WriteString(conn, "Hello!")
+	}
+	// }()
 }
