@@ -1,7 +1,7 @@
 
 # First session
 
-In this sesion we will talk about:
+In this sesion we talk about:
 
 1. Goroutines
 
@@ -10,3 +10,5 @@ In this sesion we will talk about:
 3. Channels
 
 4. Mutex
+
+5. Context: example from [go blog](https://golang.org/pkg/context/#WithCancel)
