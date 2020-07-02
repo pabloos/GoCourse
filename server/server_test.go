@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -43,7 +42,7 @@ func Test_Greet(t *testing.T) {
 			buf := new(bytes.Buffer)
 			err := json.NewEncoder(buf).Encode(tc.Greet)
 			if err != nil {
-				t.Fail(errors.New("Problem while encoding JSON: " + err.Error()))
+				t.Fatalf("Problem while encoding JSON: " + err.Error())
 			}
 
 			req, err := http.NewRequest("POST", "localhost:8080/greet", buf)
