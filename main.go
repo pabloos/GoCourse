@@ -1,11 +1,7 @@
 package main
 
 import (
-	"bufio"
-	"context"
 	"fmt"
-	"io"
-	"log"
 	"net"
 )
 
@@ -30,75 +26,55 @@ func main() {
 	// 	fmt.Println(addr)
 	// }
 
-	res := net.Resolver{
-		PreferGo: true,
-	}
-
-	addrs, err := res.LookupIPAddr(context.Background(), "drive.google.com")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	for _, addr := range addrs {
-		fmt.Println(addr.String())
-	}
-
-	// interfaces, _ := net.Interfaces()
-	// for _, iface := range interfaces {
-	// 	addrs1 := iface.HardwareAddr.String()
-
-	// 	if len(addrs1) > 0 {
-	// 		fmt.Println(iface.Name)
-	// 		fmt.Println(iface.Addrs)
-	// 	}
+	// res := net.Resolver{
+	// 	PreferGo: true,
 	// }
 
-	ip := net.ParseIP("10.0.1.1")
+	// addrs, err := res.LookupIPAddr(context.Background(), "drive.google.com")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
 
-	// get the IP mask
-	fmt.Println(ip.DefaultMask()) // ff000000
+	// for _, addr := range addrs {
+	// 	fmt.Println(addr.String())
+	// }
 
-	_, ipv4Net, _ := net.ParseCIDR("10.0.1.1/8")
+	interfaces, _ := net.Interfaces()
+	for _, iface := range interfaces {
+		addrs1 := iface.HardwareAddr.String()
 
-	ipv4Net.Contains(net.ParseIP("192.168.1.1")) //false
-
-	listener, err := net.Listen("tcp", ":8080")
-	if err != nil {
-		fmt.Println(err)
-		return
+		if len(addrs1) > 0 {
+			fmt.Println(iface.Name)
+		}
 	}
 
-	defer listener.Close()
+	/* 	ip := net.ParseIP("10.0.1.1")
 
-	go func() {
-		for {
-			conn, err := net.Dial("tcp", "localhost:8080")
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
+	   	// get the IP mask
+	   	fmt.Println(ip.DefaultMask()) // ff000000
 
-			msg, err := bufio.NewReader(conn).ReadString('\n')
-			if err != nil {
-				fmt.Println(err)
-			} else {
-				fmt.Println(string(msg))
-			}
-		}
-	}()
+	   	_, ipv4Net, _ := net.ParseCIDR("10.0.1.1/8")
 
-	// go func() {
-	for {
-		conn, err := listener.Accept()
-		if err != nil {
-			log.Printf("failed to accept connection: %s", err.Error())
-			continue
-		}
+	   	ipv4Net.Contains(net.ParseIP("192.168.1.1")) //false
 
-		fmt.Println("Served started")
+	   	listener, err := net.Listen("tcp", ":8080")
+	   	if err != nil {
+	   		fmt.Println(err)
+	   		return
+	   	}
 
-		io.WriteString(conn, "Hello!")
-	}
-	// }()
+	   	defer listener.Close()
+
+	   	for {
+	   		conn, err := listener.Accept()
+	   		if err != nil {
+	   			log.Printf("failed to accept connection: %s", err.Error())
+	   			continue
+	   		}
+
+	   		fmt.Println("Served started")
+
+	   		io.WriteString(conn, "Hello!")
+	   	} */
 }
